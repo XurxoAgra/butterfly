@@ -7,4 +7,7 @@
 /public/bundles/
 /var/
 /vendor/
+/storage/
+/docker/
+/.composer/
 ###< symfony/framework-bundle ###
