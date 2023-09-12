@@ -1,0 +1,4 @@
+api_tasks_create:
+  path: '/tasks'
+  methods: [POST]
+  controller: App\Task\Infrastructure\Ui\Controller\CreateTaskController

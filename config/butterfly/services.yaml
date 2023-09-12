@@ -1,0 +1,14 @@
+services:
+  App\Task\Application\CreateTaskCommandHandler:
+    tags:
+        -
+          name: messenger.command_handler
+          handles: App\Task\Application\CreateTaskCommand
+
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  App\Task\Infrastructure\Ui\Controller\:
+    resource: '../../src/Task/Infrastructure/Ui/Controller/*Controller.php'
+    tags: [ 'controller.service_arguments' ]

@@ -1,0 +1,44 @@
+version: "3.1"
+services:
+  webserver:
+    build:
+      context: docker/webserver
+      args:
+        PHP_VERSION: 8.2
+        HOST_UID: ${CURRENT_UID:-1001}
+    container_name: '8.2-webserver'
+    restart: 'always'
+    ports:
+      - "88:80"
+      - "448:443"
+    links:
+      - mysql
+    environment:
+      - PHP_IDE_CONFIG=serverName=localhost
+      - PHP_VERSION=8.2
+      - GIT_COMMIT_NAME=${GIT_COMMIT_USER}
+      - GIT_COMMIT_EMAIL=${GIT_COMMIT_EMAIL}
+    volumes:
+      - ./:/var/www/html
+      - ./docker/config/webserver/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/config/webserver/vhosts:/etc/apache2/sites-enabled
+      - ./storage/logs/docker/apache2:/var/log/apache2
+      - ./storage/logs/docker/xdebug:/var/www/html/storage/logs/xdebug.log
+
+  mysql:
+    build:
+      context: docker/mysql
+    container_name: '8.0-mysql'
+    restart: 'always'
+    ports:
+      - "3308:3306"
+    command: [
+      '--wait_timeout=28800',
+      '--max_allowed_packet=32505856'
+    ]
+    volumes:
+      - ./storage/data/docker/mysql:/var/lib/mysql
+      - ./storage/logs/docker/mysql:/var/log/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: butterfly
